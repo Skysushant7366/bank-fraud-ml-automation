@@ -1,12 +1,9 @@
 # ============================================================
 # CELL 1: GCP Authentication, Imports & BigQuery Client
 # ============================================================
-# 🔥 GitHub Actions ke liye Colab auth hata kar service account key use ki gayi hai:
+# 🔥 GitHub Actions (OIDC) ke liye JSON key ki zaroorat nahi! Workload Identity use hogi.
+import google.auth
 from google.cloud import bigquery
-import json, os
-client = bigquery.Client.from_service_account_json('gcp_key.json')
-print('✅ GitHub Action: BigQuery connected via Service Account Key!')
-
 import pandas as pd
 import numpy as np
 import hashlib
@@ -14,6 +11,11 @@ import warnings
 from sklearn.ensemble import IsolationForest
 from scipy.stats import poisson
 warnings.filterwarnings("ignore")
+
+# GitHub Actions apne aap credentials utha lega
+credentials, project_id = google.auth.default()
+client = bigquery.Client(project=project_id, credentials=credentials)
+print('✅ BigQuery connected via Workload Identity!')
 
 project_id = 'live-fraud-detection'
 print('✅ BigQuery ready!')
