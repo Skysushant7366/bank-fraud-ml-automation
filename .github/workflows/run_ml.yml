@@ -1,0 +1,37 @@
+name: Run ML Fraud Pipeline Daily
+
+on:
+  schedule:
+    - cron: '45 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        
+      - name: Setup Python (Latest)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+        
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          # 🔥 Aapki copy ki hui ID
+          workload_identity_provider: 'projects/836829399257/locations/global/workloadIdentityPools/github-actions-pool/providers/gh-provider-secure'
+          # 🔥 Aapka Service Account
+          service_account: 'fraud-pipeline-bot@live-fraud-detection.iam.gserviceaccount.com'
+        
+      - name: Install required libraries
+        run: |
+          pip install pandas numpy scikit-learn google-cloud-bigquery scipy
+        
+      - name: Run the ML script
+        run: python fraud_ml_pipeline.py
