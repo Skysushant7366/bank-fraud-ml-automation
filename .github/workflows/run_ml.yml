@@ -31,7 +31,7 @@ jobs:
         
       - name: Install required libraries
         run: |
-          pip install pandas numpy scikit-learn google-cloud-bigquery scipy
+          pip install pandas numpy scikit-learn google-cloud-bigquery scipy db-dtypes
         
       - name: Run the ML script
         run: python fraud_ml_pipeline.py
