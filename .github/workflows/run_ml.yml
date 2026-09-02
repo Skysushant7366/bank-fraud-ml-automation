@@ -34,4 +34,4 @@ jobs:
           pip install pandas numpy scikit-learn google-cloud-bigquery scipy db-dtypes
         
       - name: Run the ML script
-        run: python fraud_ml_pipeline.py
+        run: python Colab/fraud_ml_pipeline.py
