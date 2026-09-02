@@ -1,4 +1,4 @@
-# 🏦 Enterprise Bank Fraud Detection & MLOps Pipeline
+# 🏦 Bank Fraud Detection & MLOps Pipeline
 
 **Author:** Sushant Kumar Yadav  
 **Domain:** Financial Crime Analytics, MLOps, Data Engineering & Cloud Architecture  
@@ -33,7 +33,8 @@ The pipeline feeds directly into a dark-themed Looker Studio dashboard designed 
 
 ### 🎯 Key Performance Metrics
 * **Automated CISO Decisions:** Re-engineered the decision matrix to eliminate "Manual Reviews." The system now operates strictly on **DEFCON 1 (Critical Block)** and **DEFCON 2 (Require OTP)**, freeing up the fraud team entirely.
-* **High-Precision Threat Mitigation:** Out of 44 actual frauds in the latest holdout set, the engine successfully caught 40 (30 via hard block, 10 via OTP challenge), achieving an exceptional **90.9% overall fraud recall**.
+* **High-Precision Blocking:** Achieved an automated **68.2% Block Rate** on suspicious activities. Out of 44 actual frauds in the latest holdout set, the engine successfully caught 40 (90.9% overall recall).
+* **Threat Diagnostics:** Live tracking of over **$588.75K** in transactional volume across multiple threat vectors including Velocity Attacks, Drop House Networks, and Bin Attacks.
 * **Geospatial & Category Risk:** Real-time global heatmaps expose high-risk corridors and merchant-category vulnerabilities (e.g., Gambling/Gaming vs. Electronics).
 
 ---
@@ -46,12 +47,12 @@ A highly sophisticated custom Python pipeline (`data_pipeline/main.py`) simulate
 * **Hybrid Execution Engine:** Dynamically switches between a *Full Rebuild* (`WRITE_TRUNCATE`) and an *Incremental Last-2-Day* update (`WRITE_APPEND`). It optimizes BigQuery compute by utilizing `UNIX_SECONDS` within numeric `RANGE` window functions to prevent Out-Of-Memory (OOM) errors.
 
 ### 2. In-Warehouse ML (First Line of Defense)
-An XGBoost Classifier (`sushant_xgboost_fraud_model_v17`) is trained directly inside BigQuery using SQL (`xgboost_v17_ai_model.sql`).
+An XGBoost Classifier (`sushant_xgboost_fraud_model_v17`) is trained directly inside BigQuery using SQL (`bq_ml_model/xgboost_v17_ai_model.sql`).
 * **Feature Engineering:** Evaluates newly engineered, real-time behavioral features (`velocity_1h`, `velocity_24h`, `time_since_last_txn`, `avg_amount_deviation`, `device_risk_score`) without extracting the data.
 * **Imbalance Handling:** Natively handles severe class imbalance via `auto_class_weights = TRUE` and uses the `HIST` tree method with 150 max iterations while retaining global explainability (SHAP).
 
 ### 3. Python Forensic Engine & CISO Decision (Second Line of Defense)
-A daily CRON job pulls the last 15 days of BQML predictions and passes them through a secondary Python forensic module (`fraud_ml_pipeline.py`). This engine applies **15 leakage-free, past-only statistical tests** to catch zero-day anomalies:
+A daily cron job pulls the last 15 days of BQML predictions and passes them through the advanced Python forensic pipeline located in `Colab/fraud_ml_pipeline.py`. This engine applies **15 leakage-free, past-only statistical tests** to catch zero-day anomalies:
 * **Outlier Detection:** Z-Score, Median Absolute Deviation (MAD), and Interquartile Range (IQR).
 * **Probabilistic Models:** Poisson distribution for improbable transactional bursts and Benford's Law for first-digit manipulation.
 * **Behavioral Context:** Shannon Entropy for merchant category randomness, Markov Chains for rare behavior transition paths, Time-of-Day deviations, and Structuring (round amount) detection.
@@ -70,6 +71,10 @@ bank-fraud-ml-automation/
 ├── .github/workflows/
 │   └── run_ml.yml                     # GitHub Actions CI/CD cron job (OIDC configured)
 │
+├── Colab/
+│   ├── readme_colab_jupyter.md        # Deep dive into the 15-factor Forensic Engine
+│   └── fraud_ml_pipeline.py           # Core Python engine (Isolation Forest + BQ Client)
+│
 ├── bq_ml_model/
 │   ├── readme_ai_model.md             # Deep dive into XGBoost Hyperparameters & Features
 │   └── xgboost_v17_ai_model.sql       # BigQuery ML model creation & training script
@@ -84,5 +89,4 @@ bank-fraud-ml-automation/
 │   ├── main.py                        # Python/Faker data generator (Raw->Silver->Gold)
 │   └── requirements.txt               # Dependencies for data generation
 │
-├── README.md                          # Project Documentation (You're here)
-└── fraud_ml_pipeline.py               # Core Python engine (15 Forensic Stats + BQ Client)
+└── README.md                          # Project Documentation (You're here)
