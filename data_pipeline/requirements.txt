@@ -1,0 +1,8 @@
+pandas
+Faker
+numpy
+google-cloud-bigquery
+functions-framework
+db-dtypes
+pyarrow
+pandas-gbq
