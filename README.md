@@ -1,45 +1,78 @@
-# 🏦 End-to-End Bank Fraud Detection & MLOps Pipeline
+# 🏦 Enterprise Bank Fraud Detection & MLOps Pipeline
 
-![Google Cloud](https://img.shields.io/badge/Google_Cloud-BigQuery-4285F4?style=flat-square&logo=googlecloud)
-![BigQuery ML](https://img.shields.io/badge/BQML-In--Warehouse_ML-blue?style=flat-square)
-![Python](https://img.shields.io/badge/Python-Faker_%7C_Pandas-3776AB?style=flat-square&logo=python)
-![Looker](https://img.shields.io/badge/Looker_Studio-Live_Dashboard-F9AB00?style=flat-square&logo=looker)
+**Author:** Sushant Kumar Yadav  
+**Domain:** Financial Crime Analytics, MLOps, Data Engineering & Cloud Architecture  
 
-## 📌 Executive Summary
-An automated, cloud-native fraud detection architecture designed to identify anomalous banking transactions. Instead of relying on static CSV files, I engineered a complete Data Pipeline from synthetic data generation to in-warehouse Machine Learning (BigQuery ML) and live dashboarding.
-
----
-
-## 💼 The Architecture Flow (How It Works)
-
-### 1. Data Ingestion (The Generator)
-* Built a custom Python script (`main.py`) using the `Faker` library inside the **BigQuery Cloud Terminal**.
-* Continuously generates and streams realistic banking transactional data directly into BigQuery.
-
-### 2. The Medallion Data Warehouse (SQL)
-* **Raw Layer:** Lands the incoming JSON/CSV payloads.
-* **Silver Layer:** Cleanses, deduplicates, and standardizes timestamps and currencies.
-* **Gold Layer:** Aggregates user-level financial behavior and flags historical anomalies for training.
-
-### 3. In-Warehouse Machine Learning (BQML)
-* **Why BQML?** To avoid the high cloud compute costs and latency of moving massive datasets out of the warehouse, I trained the `v17_fraud_model` *directly* inside BigQuery using SQL.
-* The model learns from the Gold table to detect high-risk transaction patterns.
-
-### 4. MLOps & Advanced Orchestration (Google Colab)
-* Used Google Colab as the orchestration layer to bridge the BQ Model and the live Gold table.
-* Applied advanced statistical filtering to isolate and predict only the **Last 15 Days** of transaction data.
-* Pushed the final, highly accurate predictive dataset back into a new BigQuery output table.
-
-### 5. BI & Visualization
-* Connected the final predictive table directly to **Looker Studio**.
-* Created a live Executive Dashboard that allows Bank Managers to monitor Real-Time Fraud Alerts and transaction velocity without interacting with the code.
+[![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Platform-4285F4?logo=googlecloud)](https://cloud.google.com/)
+[![BigQuery ML](https://img.shields.io/badge/BigQuery-In--Warehouse%20ML-blue?logo=googlebigquery)](https://cloud.google.com/bigquery)
+[![Python](https://img.shields.io/badge/Python-Forensic%20Engine-3776AB?logo=python)](https://www.python.org/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-black?logo=githubactions)](https://github.com/features/actions)
+[![Looker Studio](https://img.shields.io/badge/Looker%20Studio-Live%20Dashboard-orange?logo=looker)](https://lookerstudio.google.com/)
+[![Security](https://img.shields.io/badge/Auth-OIDC%20Keyless-green?logo=openid)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments)
 
 ---
 
-## ⚙️ Tech Stack
-* **Cloud Infrastructure:** Google Cloud Platform (GCP Cloud Shell)
-* **Data Generation:** Python (`Faker`)
-* **Data Engineering (DWH):** BigQuery (Raw, Silver, Gold Architecture)
-* **Machine Learning:** BigQuery ML (BQML)
-* **Orchestration:** Google Colab, Pandas
-* **Visualization:** Looker Studio
+## 📑 Executive Summary
+
+Traditional fraud detection relies heavily on static CSV files and manual, rule-based reviews. This project introduces a **Cloud-Native, Fully Automated Fraud Architecture** designed to identify anomalous banking transactions continuously. 
+
+By avoiding heavy data extraction, this pipeline leverages **In-Warehouse Machine Learning (BigQuery ML)** combined with a **Python Forensic Ensemble Engine** (Isolation Forest, Statistical Scoring)[cite: 3]. Orchestrated securely via **GitHub Actions** using **OIDC Workload Identity Federation (Zero Static Keys)**, the system updates a live Looker Studio Command Center daily, enabling a 100% hands-off threat detection environment.
+
+---
+
+## 📊 CISO Command Center & Business Impact
+
+The pipeline feeds directly into a dark-themed Looker Studio dashboard designed for security analysts, surfacing critical risk metrics for immediate executive action.
+
+![CISO Command Center](dashboard/dashboard_preview_page1.png)
+*Above: The Live Fraud Analytics Dashboard tracking financial loss, attack vectors, and automated CISO decisions.*
+
+### 🎯 Key Performance Metrics
+* **Automated CISO Decisions:** Re-engineered the decision matrix to eliminate "Manual Reviews." The system now operates strictly on **DEFCON 1 (Critical Block)** and **DEFCON 2 (Require OTP)**, freeing up the fraud team entirely[cite: 3].
+* **High-Precision Blocking:** Achieved an automated **68.2% Block Rate** on suspicious activities[cite: 4]. Out of 44 actual frauds in the latest holdout set, the engine successfully caught 40 (90.9% overall recall)[cite: 3, 4].
+* **Threat Diagnostics:** Live tracking of over **$588.75K** in transactional volume across multiple threat vectors including Velocity Attacks, Drop House Networks, and Bin Attacks[cite: 4].
+* **Geospatial & Category Risk:** Real-time global heatmaps expose high-risk corridors and merchant-category vulnerabilities (e.g., Gambling/Gaming vs. Electronics)[cite: 4].
+
+---
+
+## ⚙️ Technical Architecture (How It Works)
+
+### 1. The Medallion Data Lake (Synthetic Generation)
+A custom Python pipeline (`data_pipeline/main.py`) simulates 300K+ transactional records across 5 distinct attack vectors[cite: 5]. It features a **Hybrid Engine** capable of handling both *Full Rebuilds* and *Incremental Last-2-Day* processing via `UNIX_SECONDS` window functions, upgrading data progressively through Raw ➔ Silver ➔ Gold layers[cite: 5].
+
+### 2. In-Warehouse ML (First Line of Defense)
+An XGBoost Classifier (`sushant_xgboost_fraud_model_v17`) is trained directly inside BigQuery using SQL. It evaluates newly engineered behavioral features (e.g., `velocity_1h`, `device_risk_score`, `time_since_last_txn`) without extracting the data, handling severe class imbalance via `auto_class_weights = TRUE`.
+
+### 3. Python Forensic Engine (Second Line of Defense)
+A daily CRON job pulls the last 15 days of BQML predictions and passes them through a secondary Python forensic module (`fraud_ml_pipeline.py`). This engine applies **15 leakage-free statistical tests**, including[cite: 3]:
+* Unsupervised Anomaly Detection (`IsolationForest`)[cite: 3]
+* Improbable Burst Detection (`scipy.stats.poisson`)[cite: 3]
+* Multivariate Outliers (Mahalanobis Distance)[cite: 3]
+* Behavior Path Tracking & Benford's Law[cite: 3]
+
+### 4. DevSecOps & Keyless CI/CD
+Scheduled via `.github/workflows/run_ml.yml`, the pipeline executes securely using **Workload Identity Federation (OIDC)**. This adheres to enterprise DevSecOps best practices by eliminating the need to store long-lived, vulnerable GCP JSON service account keys in GitHub Secrets.
+
+---
+
+## 📁 Repository Structure
+
+```text
+bank-fraud-ml-automation/
+├── .github/workflows/
+│   └── run_ml.yml                     # GitHub Actions CI/CD cron job (OIDC configured)
+│
+├── bq_ml_model/
+│   └── xgboost_v17_ai_model.sql       # BigQuery ML model creation & training script
+│
+├── dashboard/
+│   ├── CISO_Command_Center__Enterprise_Fraud_Engine.pdf
+│   ├── dashboard_preview_page1.png    # CISO Command Center KPIs
+│   └── dashboard_preview_page2.png    # Risk band distribution & Financial Loss metrics
+│
+├── data_pipeline/
+│   ├── main.py                        # Python/Faker data generator (Raw->Silver->Gold)
+│   └── requirements.txt               # Dependencies for data generation
+│
+├── fraud_ml_pipeline.py               # Core Python engine (15 Forensic Stats + BQ Client)
+└── README.md                          # You're here!
