@@ -41,23 +41,30 @@ The pipeline feeds directly into a dark-themed Looker Studio dashboard designed 
 
 ## ⚙️ Technical Architecture (How It Works)
 
-### 1. The Medallion Data Lake (Synthetic Generation)
-A custom Python pipeline (`data_pipeline/main.py`) simulates 300K+ transactional records across 5 distinct attack vectors. It features a **Hybrid Engine** capable of handling both *Full Rebuilds* and *Incremental Last-2-Day* processing via `UNIX_SECONDS` window functions, upgrading data progressively through Raw ➔ Silver ➔ Gold layers.
+### 1. The Medallion Data Lake (Synthetic Generation Engine)
+A highly sophisticated custom Python pipeline (`data_pipeline/main.py`) simulates 300K+ transactional records across an 8,000-customer static pool[cite: 5]. It doesn't just generate clean data; it intentionally injects real-world anomalies using `_messy_amount` and `_messy_timestamp` helpers[cite: 5]. 
+* **5 Attack Vectors Simulated:** Velocity Attacks, IP Attacks, Drop House Networks, BIN Attacks, and Smart Evade tactics[cite: 5].
+* **Hybrid Execution Engine:** Dynamically switches between a *Full Rebuild* (`WRITE_TRUNCATE`) and an *Incremental Last-2-Day* update (`WRITE_APPEND`)[cite: 5]. It optimizes BigQuery compute by utilizing `UNIX_SECONDS` within numeric `RANGE` window functions to prevent Out-Of-Memory (OOM) errors at scale[cite: 5].
 
 ### 2. In-Warehouse ML (First Line of Defense)
-An XGBoost Classifier (`sushant_xgboost_fraud_model_v17`) is trained directly inside BigQuery using SQL. It evaluates newly engineered behavioral features (e.g., `velocity_1h`, `device_risk_score`, `time_since_last_txn`) without extracting the data, handling severe class imbalance via `auto_class_weights = TRUE`.
+Instead of extracting massive datasets, an XGBoost Classifier (`BOOSTED_TREE_CLASSIFIER`) is trained directly inside BigQuery using SQL (`xgboost_v17_ai_model.sql`).
+* **Feature Engineering:** Evaluates 5 newly engineered, real-time behavioral features (`velocity_1h`, `velocity_24h`, `time_since_last_txn`, `avg_amount_deviation`, `device_risk_score`).
+* **Imbalance Handling:** Natively handles severe class imbalance via `auto_class_weights = TRUE` while retaining global explainability (SHAP).
 
-### 3. Python Forensic Engine (Second Line of Defense)
-A daily CRON job pulls the last 15 days of BQML predictions and passes them through a secondary Python forensic module (`fraud_ml_pipeline.py`). This engine applies **15 leakage-free statistical tests**, including:
-* Unsupervised Anomaly Detection (`IsolationForest`)
-* Improbable Burst Detection (`scipy.stats.poisson`)
-* Multivariate Outliers (Mahalanobis Distance)
-* Behavior Path Tracking & Benford's Law
+### 3. Python Forensic Engine (15-Factor Statistical Analysis)
+A daily CRON job pulls the last 15 days of BQML predictions and executes a secondary Python forensic module. This engine applies **15 leakage-free, past-only statistical tests** to catch zero-day anomalies[cite: 3]:
+* **Probabilistic & Mathematical:** Applies Poisson distribution for improbable transactional bursts and Benford's Law to detect first-digit manipulation[cite: 3].
+* **Outlier Detection:** Utilizes Z-Score, Median Absolute Deviation (MAD), and Interquartile Range (IQR) algorithms for extreme spend anomalies[cite: 3].
+* **Behavioral Context:** Calculates Shannon Entropy for merchant category randomness, Markov Chains for rare behavior transition paths, Time-of-Day deviations, and Structuring (round amount) detection[cite: 3].
+* **Multivariate & Graph-Based:** Computes Mahalanobis Distance, Cosine Similarity (amount vs. balance vector), Fraud Ring detection (shared device/IP tracking), and an unsupervised Scikit-Learn `IsolationForest`[cite: 3].
 
-### 4. DevSecOps & Keyless CI/CD
-Scheduled via `.github/workflows/run_ml.yml`, the pipeline executes securely using **Workload Identity Federation (OIDC)**. This adheres to enterprise DevSecOps best practices by eliminating the need to store long-lived, vulnerable GCP JSON service account keys in GitHub Secrets.
+### 4. Composite Scoring & Zero-Manual-Review Matrix
+The engine fuses the XGBoost AI score (weighted heavily at x55) with the 15 forensic signals into a final `composite_risk_score`[cite: 3]. It implements a strict, 100% automated decision matrix[cite: 3]:
+* **🔴 DEFCON 1 (Critical Block):** Triggered by high AI confidence or explicit threat flags (e.g., known bad IPs, Drop Houses)[cite: 3].
+* **🟡 DEFCON 2 (Require OTP):** Absorbs all edge cases (e.g., Isolation Forest + Mahalanobis combo, ZIP mismatches, high velocity) to challenge the user dynamically, **completely eliminating the need for a manual review team**[cite: 3].
 
----
+### 5. DevSecOps & Keyless CI/CD
+Scheduled via `.github/workflows/run_ml.yml`, the pipeline executes securely on an `ubuntu-latest` runner using **GCP Workload Identity Federation (OIDC)**. This strictly adheres to enterprise DevSecOps best practices by eliminating the need to store long-lived, vulnerable JSON service account keys in GitHub Secrets.
 
 ## 📁 Repository Structure
 
