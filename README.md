@@ -9,6 +9,7 @@
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-black?logo=githubactions)](https://github.com/features/actions)
 [![Looker Studio](https://img.shields.io/badge/Looker%20Studio-Live%20Dashboard-orange?logo=looker)](https://lookerstudio.google.com/)
 [![Security](https://img.shields.io/badge/Auth-OIDC%20Keyless-green?logo=openid)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments)
+[![Pipeline](https://github.com/Skysushant7366/bank-fraud-ml-automation/actions/workflows/run_ml.yml/badge.svg)](https://github.com/Skysushant7366/bank-fraud-ml-automation/actions/workflows/run_ml.yml)
 
 ---
 
@@ -18,9 +19,8 @@ Traditional fraud detection relies heavily on static CSV files and manual, rule-
 
 > **Note:** The transaction data is synthetic, with attack patterns injected by me. Results show that the pipeline works end to end, not real-world accuracy.
 
-By avoiding heavy data extraction, this pipeline leverages **In-Warehouse Machine Learning (BigQuery ML)** combined with a **Python Forensic Ensemble Engine** (Isolation Forest, Statistical Scoring). Orchestrated securely via **GitHub Actions** using **OIDC Workload Identity Federation (Zero Static Keys)**, the system updates a live Looker Studio Command Center daily, enabling a highly scalable,enabling a highly scalable, fully automated, hands-off detection environment.
+By avoiding heavy data extraction, this pipeline leverages **In-Warehouse Machine Learning (BigQuery ML)** combined with a **Python Forensic Ensemble Engine** (Isolation Forest, Statistical Scoring). Orchestrated securely via **GitHub Actions** using **OIDC Workload Identity Federation (Zero Static Keys)**, the system updates a live Looker Studio Command Center daily, enabling a highly scalable, fully automated, hands-off detection environment.
 
-> **Note:** The transaction data is synthetic, with attack patterns injected by me. Results show that the pipeline works end to end, not real-world accuracy.
 ---
 
 ## 📊 CISO Command Center & Business Impact
