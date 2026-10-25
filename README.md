@@ -32,8 +32,7 @@ The pipeline feeds directly into a dark-themed Looker Studio dashboard designed 
   <img src="dashboard/dashboard_preview_page2.png" width="49%" />
 </p>
 
-*Above: The Live Fraud Analytics Dashboard tracking financial loss, attack vectors, risk band distributions, and automated CISO decisions.*
-
+*Above: Dashboard snapshot from Aug 2026. The live Looker Studio dashboard updates daily.*
 ### 🎯 Key Performance Metrics
 * **Automated CISO Decisions:** Re-engineered the decision matrix to eliminate "Manual Reviews." The system now operates strictly on **DEFCON 1 (Critical Block)** and **DEFCON 2 (Require OTP)**, freeing up the fraud team entirely.
 **Blocking Performance (Aug 2026 snapshot):** Achieved an automated **68.2% Block Rate** on suspicious activities. Out of 44 actual frauds in that holdout window, the engine caught 40 (90.9% overall recall).
