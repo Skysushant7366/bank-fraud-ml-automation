@@ -16,8 +16,11 @@
 
 Traditional fraud detection relies heavily on static CSV files and manual, rule-based reviews. This project introduces a **Cloud-Native, Fully Automated Fraud Architecture** designed to identify anomalous banking transactions continuously. 
 
-By avoiding heavy data extraction, this pipeline leverages **In-Warehouse Machine Learning (BigQuery ML)** combined with a **Python Forensic Ensemble Engine** (Isolation Forest, Statistical Scoring). Orchestrated securely via **GitHub Actions** using **OIDC Workload Identity Federation (Zero Static Keys)**, the system updates a live Looker Studio Command Center daily, enabling a highly scalable, 100% hands-off threat detection environment.
+> **Note:** The transaction data is synthetic, with attack patterns injected by me. Results show that the pipeline works end to end, not real-world accuracy.
 
+By avoiding heavy data extraction, this pipeline leverages **In-Warehouse Machine Learning (BigQuery ML)** combined with a **Python Forensic Ensemble Engine** (Isolation Forest, Statistical Scoring). Orchestrated securely via **GitHub Actions** using **OIDC Workload Identity Federation (Zero Static Keys)**, the system updates a live Looker Studio Command Center daily, enabling a highly scalable,enabling a highly scalable, fully automated, hands-off detection environment.
+
+> **Note:** The transaction data is synthetic, with attack patterns injected by me. Results show that the pipeline works end to end, not real-world accuracy.
 ---
 
 ## 📊 CISO Command Center & Business Impact
@@ -57,7 +60,7 @@ A daily cron job pulls the last 15 days of BQML predictions and passes them thro
 * **Probabilistic Models:** Poisson distribution for improbable transactional bursts and Benford's Law for first-digit manipulation.
 * **Behavioral Context:** Shannon Entropy for merchant category randomness, Markov Chains for rare behavior transition paths, Time-of-Day deviations, and Structuring (round amount) detection.
 * **Multivariate & Graph-Based:** Mahalanobis Distance, Cosine Similarity (amount vs. balance vector), Fraud Ring detection (shared device/IP tracking), and an unsupervised Scikit-Learn `IsolationForest`.
-* **Zero-Manual-Review Matrix:** The engine fuses the XGBoost AI score with the 15 forensic signals into a final `composite_risk_score`. It then implements a strict, 100% automated decision matrix: **DEFCON 1 (Critical Block)** and **DEFCON 2 (Require OTP)**.
+* **Zero-Manual-Review Matrix:** The engine fuses the XGBoost AI score with the 15 forensic signals into a final `composite_risk_score`. It then implements a strict, fully automated decision matrix: **DEFCON 1 (Critical Block)** and **DEFCON 2 (Require OTP)**.
 
 ### 4. DevSecOps & Keyless CI/CD
 Scheduled via `.github/workflows/run_ml.yml`, the pipeline executes securely on an `ubuntu-latest` runner using **GCP Workload Identity Federation (OIDC)**. This strictly adheres to enterprise DevSecOps best practices by eliminating the need to store long-lived, vulnerable JSON service account keys in GitHub Secrets.
