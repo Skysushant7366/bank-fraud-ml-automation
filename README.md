@@ -36,7 +36,7 @@ The pipeline feeds directly into a dark-themed Looker Studio dashboard designed 
 
 ### 🎯 Key Performance Metrics
 * **Automated CISO Decisions:** Re-engineered the decision matrix to eliminate "Manual Reviews." The system now operates strictly on **DEFCON 1 (Critical Block)** and **DEFCON 2 (Require OTP)**, freeing up the fraud team entirely.
-* **High-Precision Blocking:** Achieved an automated **68.2% Block Rate** on suspicious activities. Out of 44 actual frauds in the latest holdout set, the engine successfully caught 40 (90.9% overall recall).
+**Blocking Performance (Aug 2026 snapshot):** Achieved an automated **68.2% Block Rate** on suspicious activities. Out of 44 actual frauds in that holdout window, the engine caught 40 (90.9% overall recall).
 * **Threat Diagnostics:** Live tracking of over **$588.75K** in transactional volume across multiple threat vectors including Velocity Attacks, Drop House Networks, and Bin Attacks.
 * **Geospatial & Category Risk:** Real-time global heatmaps expose high-risk corridors and merchant-category vulnerabilities (e.g., Gambling/Gaming vs. Electronics).
 
