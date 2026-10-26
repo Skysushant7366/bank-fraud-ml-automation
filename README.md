@@ -32,7 +32,7 @@ The pipeline feeds directly into a dark-themed Looker Studio dashboard designed 
   <img src="dashboard/dashboard_preview_page2.png" width="49%" />
 </p>
 
-*Above: Dashboard snapshot from Aug 2026. The live Looker Studio dashboard updates daily.*
+* **Blocking Performance:** The block rate and recall change with each 15-day window, because the simulated data is refreshed daily. In recent windows (Oct 2026) about 76–80% of frauds were caught. See the live dashboard for current numbers.
 ### 🎯 Key Performance Metrics
 * **Automated CISO Decisions:** Re-engineered the decision matrix to eliminate "Manual Reviews." The system now operates strictly on **DEFCON 1 (Critical Block)** and **DEFCON 2 (Require OTP)**, freeing up the fraud team entirely.
 **Blocking Performance (Aug 2026 snapshot):** Achieved an automated **68.2% Block Rate** on suspicious activities. Out of 44 actual frauds in that holdout window, the engine caught 40 (90.9% overall recall).
